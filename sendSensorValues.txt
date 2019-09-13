@@ -1,3 +1,5 @@
+//to test code, copy and paste into arduino ide
+
 const int analogInPin = A0;  // Analog input pin that the potentiometer is attached to
 
 int sensorValue = 0;        // value read from the pot
