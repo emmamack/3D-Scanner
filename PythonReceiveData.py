@@ -67,7 +67,7 @@ while True:
     #
     # data was received, convert it into 4 integers
     #
-    a, b, c, d = (int(x) for x in lineOfData.split(','))
+    a, b, c = (int(x) for x in lineOfData.split(','))
 
     #
     # print the results
@@ -75,4 +75,3 @@ while True:
     print("a = " + str(a), end="")
     print(", b = " + str(b), end="")
     print(", c = " + str(c), end="")
-    print(", d = " + str(d))
