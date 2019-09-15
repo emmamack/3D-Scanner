@@ -5,7 +5,7 @@ Servo h_servo;
 Servo v_servo;
 int h_servo_pin = 9;
 int v_servo_pin = 10;
-const int analogInPin = A0;  // Analog input pin that the potentiometer is attached to
+const int analog_in_pin = A0;  // Analog input pin that sensor is attached to
 
 int h_angle = 0;
 int v_angle = 0;
@@ -34,8 +34,8 @@ void goToOrigin(){
 }
 
 //send distance and motor positions to serial port
-void sendData {
-  sensor_value = analogRead(analogInPin);
+void sendData() {
+  sensor_value = analogRead(analog_in_pin);
 
   Serial.print(sensor_value);
   Serial.print(",");
@@ -68,25 +68,13 @@ void moveHCCW() {
 }
 
 //move vertical motor
-void moveV {
+void moveV() {
   for (v_angle = v_current_angle; v_angle <= v_current_angle + height -1; v_angle += 1) { // goes from current angle up height interval  
     // in steps of 1 degree
     v_servo.write(v_angle);              // tell servo to go to position in variable 'pos'
-    Serial.print("v_angle = ");
-    Serial.println(v_angle);
     delay(delay_time);                       // waits 15ms for the servo to reach the position
  }
  v_current_angle = v_angle;
- Serial.println(v_current_angle);
-}
-
-//check if end of scan has been reached
-void checkEnd {
-  if (v_current_angle >= total_height) {
-    Serial.println("In exit statement!");
-    goToOrigin();
-    break;
-  }
 }
 
 //main loop
@@ -96,10 +84,14 @@ void loop() {
    moveV();
    moveHCCW();
    moveV();
-   checkEnd();
+
+   //check if end of scan has been reached
+   if (v_current_angle >= total_height) {
+    goToOrigin();
+    break;
+  }
  }
  
- Serial.println("Exited loop!");
  //when scan is over, do nothing forever
  while(1); {}
 }
