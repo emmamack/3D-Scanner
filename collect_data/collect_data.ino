@@ -11,14 +11,14 @@ int h_angle = 0;
 int v_angle = 0;
 int v_current_angle = 0;
 
-int spd = 15;
+int delay_time = 15;
 int width = 90;
 int height = 10;
 int total_height = 100;
 
 bool keep_going = true;
 
-int sensorValue = 0; 
+int sensor_value = 0; 
 
 
 void setup() { 
@@ -27,75 +27,79 @@ void setup() {
   Serial.begin(9600);
 }
 
-void goToOrigin(){    //send sensor to origin
+//send sensor to origin
+void goToOrigin(){
   h_servo.write(0);
   v_servo.write(0);
 }
 
-void move_h_cw() {    //move horizontal motor in clockwise direction
+//send distance and motor positions to serial port
+void sendData {
+  sensor_value = analogRead(analogInPin);
+
+  Serial.print(sensor_value);
+  Serial.print(",");
+  Serial.print(h_angle);
+  Serial.print(",");
+  Serial.print(v_current_angle);
+  Serial.println(",");
+}
+
+//move horizontal motor in clockwise direction
+void moveHWC() {
   for (h_angle = 0; h_angle <= width; h_angle += 1) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
-    delay(spd);                       // waits 15ms for the servo to reach the position
+    delay(delay_time);                       // waits 15ms for the servo to reach the position
     
-    // read the analog in value:
-    sensorValue = analogRead(analogInPin);
-    // print the results to the Serial Monitor:
-    Serial.print(sensorValue);
-    Serial.println(",");
-    //might need extra delay for python sending?
+    sendData();
  }
 }
 
-void move_h_ccw() {
+//move horizontal motor in counter-clockwise direction
+void moveHCCW() {
   for (h_angle = width; h_angle >= 0; h_angle += -1) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
-    delay(spd);                       // waits 15ms for the servo to reach the position
-    
-    // read the analog in value:
-    sensorValue = analogRead(analogInPin);
-    // print the results to the Serial Monitor:
-    Serial.print(sensorValue);
-    Serial.print(",");
-    Serial.print(h_angle);
-    Serial.print(",");
-    Serial.print(v_current_angle);
-    Serial.println(",");
-    //might need extra delay for python sending?
+    delay(delay_time);                       // waits delay time for the servo to reach the position
+
+    sendData();
  }
 }
 
-void move_v {   //move vertical motor
-  for (v_angle = v_current_angle; v_angle <= v_current_angle + height -1; v_angle += 1) { // goes from 0 degrees to 180 degrees  
+//move vertical motor
+void moveV {
+  for (v_angle = v_current_angle; v_angle <= v_current_angle + height -1; v_angle += 1) { // goes from current angle up height interval  
     // in steps of 1 degree
     v_servo.write(v_angle);              // tell servo to go to position in variable 'pos'
     Serial.print("v_angle = ");
     Serial.println(v_angle);
-    delay(spd);                       // waits 15ms for the servo to reach the position
+    delay(delay_time);                       // waits 15ms for the servo to reach the position
  }
  v_current_angle = v_angle;
  Serial.println(v_current_angle);
 }
 
-void checkEnd {     //check if 
+//check if end of scan has been reached
+void checkEnd {
+  if (v_current_angle >= total_height) {
+    Serial.println("In exit statement!");
+    goToOrigin();
+    break;
+  }
+}
 
+//main loop
 void loop() {
- while (keep_going = true) {
-   move_h_cw()
-   move_v()
-   move_h_ccw()
-   move_v()
- 
- 
-
- if (v_current_angle >= total_height) {
-  Serial.println("In exit statement!");
-  goToOrigin();
-  break;
+ while (keep_going == true) {
+   moveHWC();
+   moveV();
+   moveHCCW();
+   moveV();
+   checkEnd();
  }
- }
+ 
  Serial.println("Exited loop!");
- //do nothing forever
+ //when scan is over, do nothing forever
  while(1); {}
 }
