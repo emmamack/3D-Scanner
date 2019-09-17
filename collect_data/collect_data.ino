@@ -16,6 +16,12 @@ int width = 90;
 int height = 10;
 int total_height = 100;
 
+//parameters describing sensor position and target size
+float d = 1;
+float w = 0.3;
+float h = 0.2;
+float seg_inc = 0.05;
+
 bool keep_going = true;
 
 int sensor_value = 0; 
@@ -25,6 +31,15 @@ void setup() {
   h_servo.attach(h_servo_pin);
   v_servo.attach(v_servo_pin);
   Serial.begin(9600);
+
+  Serial.println("theta sweep, phi_sweep, phi_inc = ");
+  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
+  Serial.println(theta_sweep);
+  float phi_sweep = 104.6*atan(h/(2*d));
+  Serial.println(phi_sweep);
+  float phi_inc = phi_sweep * seg_inc / h;
+  Serial.println(phi_inc);
+  Serial.println("");
 }
 
 //send sensor to origin
