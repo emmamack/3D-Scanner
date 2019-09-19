@@ -1,5 +1,7 @@
+import math
+
 # data = []
-# cartesian pts = []
+# cartesian_coords = []
 
 #while lineOfData != "":
     #lineOfData = serialPort.readline().decode(encoding = "ascii")
@@ -8,6 +10,7 @@
     # if len(lineOfData) > 0:
         # a, b, c = (int(x) for x in lineOfData.split(','))
         # distance = (16366/(a + 46.5)) - 9.09
+        #
 
 #distance, h_angle, v_angle
 data = [512,21,80,
@@ -172,17 +175,31 @@ data = [512,21,80,
 511,1,90,
 509,0,90]
 
-# //parameters describing sensor position and target size
-# float d = 1;
-# float w = 0.3;
-# float h = 0.2;
-# float seg_inc = 0.05;
-#
-# Serial.println("theta sweep, phi_sweep, phi_inc = ");
-#   float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
-#   Serial.println(theta_sweep);
-#   float phi_sweep = 104.6*atan(h/(2*d));
-#   Serial.println(phi_sweep);
-#   float phi_inc = phi_sweep * seg_inc / h;
-#   Serial.println(phi_inc);
-#   Serial.println("");
+def get_data_tuples():
+    data_tuples = []
+    index = 0
+    while index <= (len(data)-3):
+        #this line converts voltage to distance, and it works!
+        distance = (16366/(data[index] + 46.5)) - 9.09
+        data_tuple = (distance, data[index+1], data[index+2])
+        data_tuples.append(data_tuple)
+        index += 3
+    return data_tuples
+
+def spherical_to_cartesian(spherical_coords):
+    cartesian_coords = []
+    for spherical_coord in spherical_coords:
+        rho = spherical_coord[0]
+        theta = spherical_coord[1]
+        phi = spherical_coord[2]
+        x = round(rho * math.sin(phi) * math.cos(theta), 2)
+        y = round(rho * math.sin(phi) * math.sin(theta), 2)
+        z = round(rho * math.cos(theta), 2)
+        cartesian_coords.append((x,y,z))
+    return(cartesian_coords)
+
+
+
+spherical_coords = get_data_tuples()
+cartesian_coords = spherical_to_cartesian(spherical_coords)
+print(cartesian_coords)
