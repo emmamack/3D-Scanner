@@ -1,7 +1,10 @@
 import math
 from mpl_toolkits import mplot3d
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 
 # data = []
 # cartesian_coords = []
@@ -192,7 +195,10 @@ def get_data_tuples():
     return data_tuples
 
 def spherical_to_cartesian(spherical_coords):
-    cartesian_coords = []
+    """Returns cartesian coords in form all x, all y, all z, rather than triplets"""
+    xs = []
+    ys = []
+    zs = []
     for spherical_coord in spherical_coords:
         rho = spherical_coord[0]
         theta = spherical_coord[1]
@@ -200,11 +206,22 @@ def spherical_to_cartesian(spherical_coords):
         x = round(rho * math.sin(phi) * math.cos(theta), 2)
         y = round(rho * math.sin(phi) * math.sin(theta), 2)
         z = round(rho * math.cos(theta), 2)
-        cartesian_coords.append((x,y,z))
-    return(cartesian_coords)
+        xs.append(x)
+        ys.append(y)
+        zs.append(z)
+    return(xs,ys,zs)
 
+def make_graph(xs, ys, zs):
+
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.scatter3D(xs, ys, zs);
+    fig.savefig('test.png')
 
 
 spherical_coords = get_data_tuples()
-cartesian_coords = spherical_to_cartesian(spherical_coords)
-print(cartesian_coords)
+xs, ys, zs = spherical_to_cartesian(spherical_coords)
+print(xs)
+print(ys)
+print(zs)
+make_graph(xs, ys, zs)
