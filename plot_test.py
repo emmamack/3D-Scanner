@@ -1,4 +1,7 @@
 import math
+from mpl_toolkits import mplot3d
+import numpy as np
+import matplotlib.pyplot as plt
 
 # data = []
 # cartesian_coords = []
@@ -181,7 +184,9 @@ def get_data_tuples():
     while index <= (len(data)-3):
         #this line converts voltage to distance, and it works!
         distance = (16366/(data[index] + 46.5)) - 9.09
-        data_tuple = (distance, data[index+1], data[index+2])
+        theta = math.radians(data[index+1])
+        phi = math.radians(data[index+1])
+        data_tuple = (distance, theta, phi)
         data_tuples.append(data_tuple)
         index += 3
     return data_tuples
