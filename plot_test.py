@@ -188,11 +188,21 @@ def get_data_tuples():
         #this line converts voltage to distance, and it works!
         distance = (16366/(data[index] + 46.5)) - 9.09
         theta = math.radians(data[index+1])
-        phi = math.radians(data[index+1])
+        phi = math.radians(data[index+2])
         data_tuple = (distance, theta, phi)
         data_tuples.append(data_tuple)
         index += 3
     return data_tuples
+
+def group_by_dimension(spherical_coords):
+    rhos = []
+    thetas = []
+    phis = []
+    for spherical_coord in spherical_coords:
+        rhos.append(spherical_coord[0])
+        thetas.append(spherical_coord[1])
+        phis.append(spherical_coord[2])
+    return rhos, thetas, phis
 
 def spherical_to_cartesian(spherical_coords):
     """Returns cartesian coords in form all x, all y, all z, rather than triplets"""
@@ -211,17 +221,30 @@ def spherical_to_cartesian(spherical_coords):
         zs.append(z)
     return(xs,ys,zs)
 
-def make_graph(xs, ys, zs):
-
+def make_graph_3d(xs, ys, zs):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     ax.scatter3D(xs, ys, zs);
     fig.savefig('test.png')
 
+def make_graph_2d(rhos, thetas, phis):
+    fig = plt.figure()
+    ax = plt.axes()
+    ax.scatter(thetas,phis);
+    fig.savefig('test2d.png')
+
 
 spherical_coords = get_data_tuples()
-xs, ys, zs = spherical_to_cartesian(spherical_coords)
-print(xs)
-print(ys)
-print(zs)
-make_graph(xs, ys, zs)
+rhos, thetas, phis = group_by_dimension(spherical_coords)
+print(rhos)
+print(thetas)
+print(phis)
+
+make_graph_3d(rhos, thetas, phis)
+# make_graph_2d(rhos, thetas, phis)
+
+# xs, ys, zs = spherical_to_cartesian(spherical_coords)
+# print(xs)
+# print(ys)
+# print(zs)
+# make_graph_3d(xs, ys, zs)

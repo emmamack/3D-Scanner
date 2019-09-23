@@ -12,9 +12,9 @@ int v_angle = 0;
 int v_current_angle = 0;
 
 int delay_time = 15;
-int width = 90;
+int width = 40;
 int height = 10;
-int total_height = 100;
+int total_height = 50;
 
 //parameters describing sensor position and target size
 float d = 1;
@@ -26,20 +26,32 @@ bool keep_going = true;
 
 int sensor_value = 0; 
 
+//Serial.begin(9600);
+//  Serial.println("theta sweep, phi_sweep, phi_inc = ");
+//  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
+//  Serial.println(theta_sweep);
+//  float phi_sweep = 104.6*atan(h/(2*d));
+//  Serial.println(phi_sweep);
+//  float phi_inc = phi_sweep * seg_inc / h;
+//  Serial.println(phi_inc);
+//  Serial.println("");
+
 
 void setup() { 
   h_servo.attach(h_servo_pin);
   v_servo.attach(v_servo_pin);
   Serial.begin(9600);
 
-  Serial.println("theta sweep, phi_sweep, phi_inc = ");
+//  Serial.println("theta sweep, phi_sweep, phi_inc = ");
   float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
-  Serial.println(theta_sweep);
+//  Serial.println(theta_sweep);
   float phi_sweep = 104.6*atan(h/(2*d));
-  Serial.println(phi_sweep);
+//  Serial.println(phi_sweep);
   float phi_inc = phi_sweep * seg_inc / h;
-  Serial.println(phi_inc);
-  Serial.println("");
+//  Serial.println(phi_inc);
+//  Serial.println("");
+
+  delay(3000);  //delay so the human has time to run python
 }
 
 //send sensor to origin
@@ -56,12 +68,11 @@ void sendData() {
   Serial.print(",");
   Serial.print(h_angle);
   Serial.print(",");
-  Serial.print(v_current_angle);
-  Serial.println(",");
+  Serial.println(v_current_angle);
 }
 
 //move horizontal motor in clockwise direction
-void moveHWC() {
+void moveHCW() {
   for (h_angle = 0; h_angle <= width; h_angle += 1) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
@@ -95,7 +106,7 @@ void moveV() {
 //main loop
 void loop() {
  while (keep_going == true) {
-   moveHWC();
+   moveHCW();
    moveV();
    moveHCCW();
    moveV();
