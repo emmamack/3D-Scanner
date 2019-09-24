@@ -12,9 +12,9 @@ int v_angle = 0;
 int v_current_angle = 0;
 
 int delay_time = 15;
-int width = 40;
-int height = 10;
-int total_height = 50;
+int width = 90;
+int height = 2;
+int total_height = 60;
 
 //parameters describing sensor position and target size
 float d = 1;
@@ -26,32 +26,23 @@ bool keep_going = true;
 
 int sensor_value = 0; 
 
-//Serial.begin(9600);
-//  Serial.println("theta sweep, phi_sweep, phi_inc = ");
-//  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
-//  Serial.println(theta_sweep);
-//  float phi_sweep = 104.6*atan(h/(2*d));
-//  Serial.println(phi_sweep);
-//  float phi_inc = phi_sweep * seg_inc / h;
-//  Serial.println(phi_inc);
-//  Serial.println("");
-
 
 void setup() { 
+  delay(3000);  //delay so the human has time to run python
   h_servo.attach(h_servo_pin);
   v_servo.attach(v_servo_pin);
   Serial.begin(9600);
+//
+////  Serial.println("theta sweep, phi_sweep, phi_inc = ");
+//  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
+////  Serial.println(theta_sweep);
+//  float phi_sweep = 104.6*atan(h/(2*d));
+////  Serial.println(phi_sweep);
+//  float phi_inc = phi_sweep * seg_inc / h;
+////  Serial.println(phi_inc);
+////  Serial.println("");
 
-//  Serial.println("theta sweep, phi_sweep, phi_inc = ");
-  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
-//  Serial.println(theta_sweep);
-  float phi_sweep = 104.6*atan(h/(2*d));
-//  Serial.println(phi_sweep);
-  float phi_inc = phi_sweep * seg_inc / h;
-//  Serial.println(phi_inc);
-//  Serial.println("");
 
-  delay(3000);  //delay so the human has time to run python
 }
 
 //send sensor to origin
@@ -73,7 +64,7 @@ void sendData() {
 
 //move horizontal motor in clockwise direction
 void moveHCW() {
-  for (h_angle = 0; h_angle <= width; h_angle += 1) { // goes from 0 degrees to 180 degrees  
+  for (h_angle = 0; h_angle <= width; h_angle += 2) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
     delay(delay_time);                       // waits 15ms for the servo to reach the position
@@ -84,7 +75,7 @@ void moveHCW() {
 
 //move horizontal motor in counter-clockwise direction
 void moveHCCW() {
-  for (h_angle = width; h_angle >= 0; h_angle += -1) { // goes from 0 degrees to 180 degrees  
+  for (h_angle = width; h_angle >= 0; h_angle += -2) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
     delay(delay_time);                       // waits delay time for the servo to reach the position
@@ -105,11 +96,9 @@ void moveV() {
 
 //main loop
 void loop() {
- while (keep_going == true) {
+ while (keep_going == true) {   
+   moveV();
    moveHCW();
-   moveV();
-   moveHCCW();
-   moveV();
 
    //check if end of scan has been reached
    if (v_current_angle >= total_height) {

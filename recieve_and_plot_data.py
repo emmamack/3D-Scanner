@@ -34,11 +34,18 @@ def recordData():
         if len(lineOfData) == 0:
             break
 
-        a, b, c = (int(x) for x in lineOfData.split(','))
+        try:
+            a, b, c = (int(x) for x in lineOfData.split(','))
+        except:
+            pass
 
         rho = round(((16366/(a + 46.5)) - 9.09), 3)
-        theta = round(math.radians(b), 3)
-        phi = round(math.radians(c), 3)
+        if rho > 50:
+            rho = 50
+        # theta = round(math.radians(b), 3)
+        # phi = round(math.radians(c), 3)
+        theta = round(b, 3)
+        phi = round(c, 3)
         print(str(rho) + ", " + str(theta) + ", " + str(phi))
         rhos.append(rho)
         thetas.append(theta)
@@ -64,7 +71,18 @@ def make_graph_2d(rhos, thetas, phis):
     ax.scatter(thetas,phis);
     fig.savefig('test2d.png')
 
+def make_graph_colored(xs, ys, zs):
+    fig = plt.figure()
+    ax = plt.axes()
+    # ax.set_xlabel("x direction (radians)")
+    # ax.set_ylabel("y direction (radians)")
+    ax.set_title("3D scan")
+    plt.scatter(xs, ys, c=zs, cmap='bone');
+    cbar = plt.colorbar()
+    cbar.set_label('Closeness to sensor (cm)')
+    fig.savefig('testColored.png')
+
 checkForData()
 rhos, thetas, phis, xs, ys, zs = recordData()
 # make_graph_2d(rhos, thetas, phis)
-make_graph_3d(rhos, thetas, phis)
+make_graph_colored(thetas, phis, rhos)

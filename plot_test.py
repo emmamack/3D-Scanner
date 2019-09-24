@@ -53,7 +53,7 @@ data = [512,21,80,
 548,52,80,
 516,53,80,
 515,54,80,
-628,55,80,
+100,55,80,
 523,56,80,
 522,57,80,
 515,58,80,
@@ -75,7 +75,7 @@ data = [512,21,80,
 542,74,80,
 509,75,80,
 512,76,80,
-512,77,80,
+342,77,80,
 512,78,80,
 512,79,80,
 512,80,80,
@@ -88,7 +88,7 @@ data = [512,21,80,
 509,87,80,
 509,88,80,
 509,89,80,
-508,90,80,
+200,90,80,
 523,90,90,
 522,89,90,
 583,88,90,
@@ -116,7 +116,7 @@ data = [512,21,80,
 515,66,90,
 617,65,90,
 518,64,90,
-522,63,90,
+66,63,90,
 540,62,90,
 512,61,90,
 512,60,90,
@@ -139,7 +139,7 @@ data = [512,21,80,
 510,43,90,
 523,42,90,
 527,41,90,
-512,40,90,
+400,40,90,
 512,39,90,
 614,38,90,
 508,37,90,
@@ -170,7 +170,7 @@ data = [512,21,80,
 512,12,90,
 612,11,90,
 512,10,90,
-519,9,90,
+300,9,90,
 522,8,90,
 548,7,90,
 516,6,90,
@@ -233,15 +233,26 @@ def make_graph_2d(rhos, thetas, phis):
     ax.scatter(thetas,phis);
     fig.savefig('test2d.png')
 
+def make_graph_colored(xs, ys, zs):
+    fig = plt.figure()
+    ax = plt.axes()
+    ax.set_xlabel("x direction (radians)")
+    ax.set_ylabel("y direction (radians)")
+    ax.set_title("3D scan")
+    plt.scatter(xs, ys, c=zs, cmap='bone');
+    cbar = plt.colorbar()
+    cbar.set_label('Closeness to sensor (cm)')
+    fig.savefig('testColored.png')
+
 
 spherical_coords = get_data_tuples()
 rhos, thetas, phis = group_by_dimension(spherical_coords)
+xs, ys, zs = spherical_to_cartesian(spherical_coords)
 print(rhos)
-print(thetas)
-print(phis)
 
-make_graph_3d(rhos, thetas, phis)
+# make_graph_3d(rhos, thetas, phis)
 # make_graph_2d(rhos, thetas, phis)
+make_graph_colored(thetas, phis, rhos)
 
 # xs, ys, zs = spherical_to_cartesian(spherical_coords)
 # print(xs)
