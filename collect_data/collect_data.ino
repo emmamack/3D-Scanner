@@ -1,10 +1,10 @@
 //sudo chmod a+rw /dev/ttyACM0
 
-//parameters describing sensor position and target size
-float d = 1;
-float w = 0.3;
-float h = 0.2;
+//parameters for the user to change
 float scan_resolution = 1; //in integers: best is 1, higher numbers --> lower res
+int delay_time = 15;
+int width = 60;
+int total_height = 40;
 
 #include <Servo.h>    //servo package
 Servo h_servo;
@@ -13,17 +13,11 @@ int h_servo_pin = 9;
 int v_servo_pin = 10;
 const int analog_in_pin = A0;  // Analog input pin that sensor is attached to
 
+//initializing variables
 int h_angle = 0;
 int v_angle = 0;
 int v_current_angle = 0;
-
-int delay_time = 15;
-int width = 90;
-int height = 2;
-int total_height = 60;
-
 bool keep_going = true;
-
 int sensor_value = 0; 
 
 
@@ -32,17 +26,7 @@ void setup() {
   h_servo.attach(h_servo_pin);
   v_servo.attach(v_servo_pin);
   Serial.begin(9600);
-//
-////  Serial.println("theta sweep, phi_sweep, phi_inc = ");
-//  float theta_sweep = 104.6*atan(w/(2*d));    //104.6 = 2*converting from rad to deg
-////  Serial.println(theta_sweep);
-//  float phi_sweep = 104.6*atan(h/(2*d));
-////  Serial.println(phi_sweep);
-//  float phi_inc = phi_sweep * seg_inc / h;
-////  Serial.println(phi_inc);
-////  Serial.println("");
-
-
+  goToOrigin();
 }
 
 //send sensor to origin
@@ -67,19 +51,8 @@ void moveHCW() {
   for (h_angle = 0; h_angle <= width; h_angle += scan_resolution) { // goes from 0 degrees to 180 degrees  
     // in steps of 1 degree
     h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
-    delay(delay_time);                       // waits 15ms for the servo to reach the position
+    delay(delay_time);                       // waits dely time for the servo to reach the position
     
-    sendData();
- }
-}
-
-//move horizontal motor in counter-clockwise direction
-void moveHCCW() {
-  for (h_angle = width; h_angle >= 0; h_angle += -1*scan_resolution) { // goes from 0 degrees to 180 degrees  
-    // in steps of 1 degree
-    h_servo.write(h_angle);              // tell servo to go to position in variable 'pos'
-    delay(delay_time);                       // waits delay time for the servo to reach the position
-
     sendData();
  }
 }
@@ -87,9 +60,9 @@ void moveHCCW() {
 //move vertical motor
 void moveV() {
   for (v_angle = v_current_angle; v_angle <= v_current_angle + scan_resolution -1; v_angle += 1) { // goes from current angle up height interval  
-    // in steps of 1 degree
+    // in steps of the resolution
     v_servo.write(v_angle);              // tell servo to go to position in variable 'pos'
-    delay(delay_time);                       // waits 15ms for the servo to reach the position
+    delay(delay_time);                       // waits delay time for the servo to reach the position
  }
  v_current_angle = v_angle;
 }
